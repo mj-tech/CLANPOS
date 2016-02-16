@@ -3,6 +3,7 @@ package com.mjtech.clanpos;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -14,11 +15,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 
 public class payment extends AppCompatActivity {
     NfcAdapter nfcAdapter;
@@ -62,7 +72,9 @@ public class payment extends AppCompatActivity {
         nfcAdapter.disableForegroundDispatch(this);
     }
 
-    private class handlePayment extends AsyncTask<String, Void, Boolean> {
+    private class handlePayment extends AsyncTask<String, Void, Void> {
+        JSONObject obj;
+
         protected void onPreExecute() {
             TextView tv = (TextView)findViewById(R.id.icon);
             tv.getBackground().setColorFilter(0xFF6666FF, PorterDuff.Mode.ADD);
@@ -70,33 +82,53 @@ public class payment extends AppCompatActivity {
             ((TextView)findViewById(R.id.message)).setText("Connecting...");
         }
 
-        protected Boolean doInBackground(String... params) {
+        protected Void doInBackground(String... params) {
             try {
-                URL url = new URL("http://mjtech.cf/");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                String stat = readStream(con.getInputStream());
-                if(stat.equals("<h1>mjtech</h1>")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                URL url = new URL("https://mjtech.cf/api/product/pay.php");
+                HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+                con.setHostnameVerifier(new HostnameVerifier() {
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                });
+                con.setRequestMethod("POST");
+                con.setDoOutput(true);
+
+                Uri.Builder builder = new Uri.Builder().appendQueryParameter("session", params[0])
+                                                       .appendQueryParameter("price", String.valueOf(total));
+
+                String query = builder.build().getEncodedQuery();
+
+                OutputStream os = con.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+
+                obj = new JSONObject(readStream(con.getInputStream()));
+            } catch (Exception ignored) {
+                ignored.printStackTrace();
             }
-            return false;
+            return null;
         }
 
-        protected void onPostExecute(Boolean stat) {
+        protected void onPostExecute(Void voided) {
             TextView tv = (TextView) findViewById(R.id.icon);
-            if (stat) {
-                tv.getBackground().setColorFilter(0xFF33CC33, PorterDuff.Mode.ADD);
-                tv.setText("✔");
-                ((TextView) findViewById(R.id.message)).setText("Transaction Completed.");
-            } else {
-                tv.getBackground().setColorFilter(0xFFFF6666, PorterDuff.Mode.ADD);
-                tv.setText("✖");
-                ((TextView) findViewById(R.id.message)).setText("Transaction Failed.");
-            }
+            try {
+                if (obj.getInt("err") == 0) {
+                    tv.getBackground().setColorFilter(0xFF33CC33, PorterDuff.Mode.ADD);
+                    tv.setText("✔");
+                    ((TextView) findViewById(R.id.message)).setText("Transaction Completed.");
+                    ((TextView) findViewById(R.id.details)).setText("Remaining Value: $"+String.format("%10.2f", obj.getDouble("balance")));
+                } else {
+                    tv.getBackground().setColorFilter(0xFFFF6666, PorterDuff.Mode.ADD);
+                    tv.setText("✖");
+                    ((TextView) findViewById(R.id.message)).setText("Transaction Failed.");
+                    ((TextView) findViewById(R.id.details)).setText(obj.getInt("errmsg"));
+                }
+            } catch (Exception e) {}
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override

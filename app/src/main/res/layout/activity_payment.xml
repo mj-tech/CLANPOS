@@ -39,4 +39,17 @@
         android:textColor="#000"
         android:textSize="30sp"
         android:id="@+id/message"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10sp"
+        android:text=""
+        android:textColor="#333"
+        android:textSize="26sp"
+        android:id="@+id/details"
+        android:layout_below="@+id/message"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
