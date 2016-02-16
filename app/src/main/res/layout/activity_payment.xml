@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".payment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10sp"
+        android:text="$0.00"
+        android:id="@+id/total1"
+        android:textColor="#FFF"
+        android:textSize="40sp"
+        android:background="#9999FF"/>
+
+    <TextView
+        android:layout_width="200sp"
+        android:layout_height="200sp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="A"
+        android:textColor="#FFF"
+        android:textSize="100sp"
+        android:gravity="center"
+        android:background="@drawable/circle"
+        android:backgroundTintMode="add"
+        android:id="@+id/icon"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/icon"
+        android:gravity="center"
+        android:padding="10sp"
+        android:text="TEXT"
+        android:textColor="#000"
+        android:textSize="30sp"
+        android:id="@+id/message"/>
+</RelativeLayout>
