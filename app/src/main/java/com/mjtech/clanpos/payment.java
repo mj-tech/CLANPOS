@@ -126,17 +126,17 @@ public class payment extends AppCompatActivity {
                     tv.getBackground().setColorFilter(0xFFFF6666, PorterDuff.Mode.ADD);
                     tv.setText("✖");
                     ((TextView) findViewById(R.id.message)).setText("Transaction Failed.");
-                    ((TextView) findViewById(R.id.details)).setText(obj.getInt("errmsg"));
+                    ((TextView) findViewById(R.id.details)).setText(obj.getString("errmsg"));
                 }
             } catch (Exception e) {}
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    waiting();
+                    finish();
                 }
             }, 3000);
-            finish();
+
         }
     }
 
