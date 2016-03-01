@@ -43,8 +43,16 @@ public class payment extends AppCompatActivity {
         setContentView(R.layout.activity_payment);
 
         total = getIntent().getExtras().getDouble("TOTAL");
-        ((TextView)findViewById(R.id.total1)).setText("$"+String.format("%10.2f", total));
+        setText(total);
         waiting();
+    }
+
+    private void setText(double bal) {
+        String pre = "";
+        if(bal>0) {
+            pre = "+";
+        }
+        ((TextView)findViewById(R.id.total1)).setText(pre+"$"+String.format("%10.2f", Math.abs(total)));
     }
 
     @Override

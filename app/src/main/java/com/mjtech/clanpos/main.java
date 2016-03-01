@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -56,19 +57,47 @@ public class main extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.addvalue).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                double add = Double.parseDouble(((EditText) findViewById(R.id.addv)).getText().toString());
+                HashMap<String, String> map = new HashMap<>();
+
+                map.put("NAME", "Add Value");
+                map.put("ID", "");
+                map.put("PRICE", "+$"+add);
+
+                total = total + add;
+                setText(total);
+
+                itemMap.add(map);
+                adapter1.notifyDataSetChanged();
+
+                findViewById(R.id.pay).setEnabled(true);
+            }
+        });
+
         findViewById(R.id.pay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(main.this,payment.class);
-                intent.putExtra("TOTAL",total);
+                intent.putExtra("TOTAL", total);
                 startActivity(intent);
                 total = 0;
-                ((TextView)findViewById(R.id.total)).setText("$"+String.format("%10.2f", total));
+                setText(total);
                 itemMap.clear();
                 adapter1.notifyDataSetChanged();
                 findViewById(R.id.pay).setEnabled(false);
             }
         });
+    }
+
+    private void setText(double bal) {
+        String pre = "";
+        if(bal>0) {
+            pre = "+";
+        }
+        ((TextView)findViewById(R.id.total)).setText(pre+"$"+String.format("%10.2f", Math.abs(total)));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -125,8 +154,8 @@ public class main extends AppCompatActivity {
                     map.put("ID", obj.getString("id"));
                     map.put("PRICE", "$"+obj.getString("price"));
 
-                    total = total + Double.parseDouble(obj.getString("price"));
-                    ((TextView)findViewById(R.id.total)).setText("$"+String.format("%10.2f", total));
+                    total = total - Double.parseDouble(obj.getString("price"));
+                    setText(total);
 
                     itemMap.add(map);
                     adapter1.notifyDataSetChanged();
