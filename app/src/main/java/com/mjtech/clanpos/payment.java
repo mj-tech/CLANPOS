@@ -68,7 +68,6 @@ public class payment extends AppCompatActivity {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
             Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefRecord record = ((NdefMessage) rawMessages[0]).getRecords()[0];
-            Log.e("Received", new String(record.getPayload()));
 
             new handlePayment().execute(new String(record.getPayload()));
         }
