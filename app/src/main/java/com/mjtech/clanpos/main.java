@@ -60,7 +60,13 @@ public class main extends AppCompatActivity {
         findViewById(R.id.addvalue).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double add = Double.parseDouble(((EditText) findViewById(R.id.addv)).getText().toString());
+                double add;
+                try {
+                    add = Double.parseDouble(((EditText) findViewById(R.id.addv)).getText().toString());
+                } catch (Exception e) {
+                    return;
+                }
+                if(add==0) return;
                 HashMap<String, String> map = new HashMap<>();
 
                 map.put("NAME", "Add Value");
@@ -74,6 +80,7 @@ public class main extends AppCompatActivity {
                 adapter1.notifyDataSetChanged();
 
                 findViewById(R.id.pay).setEnabled(true);
+                ((EditText) findViewById(R.id.addv)).setText("");
             }
         });
 

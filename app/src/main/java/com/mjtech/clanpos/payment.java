@@ -1,5 +1,6 @@
 package com.mjtech.clanpos;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -30,7 +31,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
-public class payment extends AppCompatActivity {
+public class payment extends Activity {
     NfcAdapter nfcAdapter;
     double total;
 
@@ -149,7 +150,7 @@ public class payment extends AppCompatActivity {
 
     private void waiting() {
         TextView tv = (TextView) findViewById(R.id.icon);
-        tv.getBackground().setColorFilter(0xFF9999FF, PorterDuff.Mode.ADD);
+        tv.getBackground().setColorFilter(0xFF3366FF, PorterDuff.Mode.ADD);
         tv.setText("▼");
         ((TextView) findViewById(R.id.message)).setText("Please Tap Your Phone.");
     }

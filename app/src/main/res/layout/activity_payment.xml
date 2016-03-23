@@ -14,7 +14,7 @@
         android:id="@+id/total1"
         android:textColor="#FFF"
         android:textSize="40sp"
-        android:background="#9999FF"/>
+        android:background="#3F51B5"/>
 
     <TextView
         android:layout_width="200sp"
@@ -37,7 +37,7 @@
         android:padding="10sp"
         android:text="TEXT"
         android:textColor="#000"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:id="@+id/message"/>
 
     <TextView
@@ -47,7 +47,7 @@
         android:padding="10sp"
         android:text=""
         android:textColor="#333"
-        android:textSize="26sp"
+        android:textSize="20sp"
         android:id="@+id/details"
         android:layout_below="@+id/message"
         android:layout_alignParentLeft="true"
